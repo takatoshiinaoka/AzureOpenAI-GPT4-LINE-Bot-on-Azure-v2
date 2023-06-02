@@ -1,0 +1,42 @@
+name: Trigger auto deployment for container-apps
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/container-apps-AutoDeployTrigger-4407ffac-774d-48e9-abf8-2f4b795fe454.yml'
+
+  # Allow mannually trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.CONTAINERAPPS_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: acrrxhpz5jbdcsas.azurecr.io
+          registryUsername: ${{ secrets.CONTAINERAPPS_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.CONTAINERAPPS_REGISTRY_PASSWORD }}
+          containerAppName: container-apps
+          resourceGroup: 20230602LineBot
+          imageToBuild: acrrxhpz5jbdcsas.azurecr.io/container-apps:${{ github.sha }}
+          
+
+     
+

@@ -91,7 +91,7 @@ def message_text(event):
     response = openai.ChatCompletion.create(
         engine=os.getenv("OPENAI_API_ENGINE_NAME"), # engine = "deployment_name".
         messages=[
-            {"role":"system", "content": "関西弁でしゃべって"},
+            {"role":"system", "content": "全部関西弁で答えて！"},
             {"role": "user", "content": event.message.text}
         ]
     )
